@@ -1,7 +1,7 @@
 <?php
 /* * * *
  * Class: FormBuilder
- * Version: 4
+ * Version: 4.1
  * Date: 22 Aug, 2022
  * Description: Creates form fields
  * Fields: 'text','password', 'textarea', 'email', 'checkbox', 'radio', 'select','countries','kvselect' 'multiselect', 'multiple', 'date','date_special', 'image','wp_color', 'wp_upload', 'range', 'submit'
@@ -25,7 +25,7 @@ class FormBuilder
         'options' => 'THE OPTIONS FOR: radio/select/multiple',
         'for range' => 'min & max: ARE MUST',
         'input_class' => 'APPLY COLUMN CLASSES DIRECT TO input EXCEPT ceheckbox/radiobutton/fileupload/multiple', //
-        'NOTE:' => ' Want jQuery Validation? just add:  $form_builder = new FormBuilder(); $form_builder->jQuery_validation(); to your footer after jQuery and inside your onclick add: form_validator(".form_builder_submit",".form_builder_field.required"); And added new js classes alpha,numeric,alpha_numeric and alpha_numeric_dash or no_special_chars',
+        'NOTE:' => 'Fixed issue for args id to the_id and name the_name same for label.<br/> Want jQuery Validation? just add:  $form_builder = new FormBuilder(); $form_builder->jQuery_validation(); to your footer after jQuery and inside your onclick add: form_validator(".form_builder_submit",".form_builder_field.required"); And added new js classes alpha,numeric,alpha_numeric and alpha_numeric_dash or no_special_chars',
         'Available types in version 4' => "'wp_color', 'wp_upload','text','password', 'textarea', 'email', 'checkbox', 'radio', 'select','countries','kvselect' 'multiselect', 'multiple', 'date','date_special', 'image', 'range', 'submit' ",
     );
 
@@ -52,10 +52,13 @@ class FormBuilder
             echo "<div class='text-danger form-group row'>Please specify field id and label.</div>";
             return;
         }
-           $the_label = ucfirst($this->make_label($label));
-            $the_id = $id;
-            $the_name = $name;
+            $the_label  = ucfirst($this->make_label($label));
+            $the_id     = $id;
+            $the_name   = $name;
         
+            $args['the_label']   =      ucfirst($this->make_label($label));
+            $args['the_id']      =      $id;
+            $args['the_name']    =      $name;
         ?>
             <?php
         if ($type === "range") {
@@ -116,14 +119,15 @@ public function text($args){
         $$k = $v;
     }
     ?>
-      <input type="text" 
+<input type="text" 
   class="<?=isset($type_class) && $type_class!="" ? $type_class :'';?><?=(@$required != ""?'required':'');?> form_builder_field form-control <?=$input_class != "" ? $input_class:''; ?> <?=$the_id?> input-<?=$type;?> field_<?=$the_id?>" 
   id="<?=$the_id?>" name="<?=$the_name?>" 
   value="<?=(@$dbval != ""?$dbval:(isset($_REQUEST[$the_name])?$_REQUEST[$the_name]:''));?>" 
   <?=(@$required != ""?'required="required"':'');?> 
   placeholder="<?=$the_label?>" 
   data-id="<?=$the_id?>" 
-  minlength="<?=(isset($min) && $min !="") ? $min : '';?>" maxlength="<?=(isset($max) && $max !="") ? $max : '';?>">
+  minlength="<?=(isset($min) && $min !="") ? $min : '';?>" 
+  maxlength="<?=(isset($max) && $max !="") ? $max : '';?>">
   <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
     <?php 
 }
@@ -550,7 +554,7 @@ $('.<?=$the_id?>-delete').hide();
 public function submit($args){
     foreach ($args as $k => $v) {
         $$k = $v;
-    }
+    } 
     ?>
   <button type="submit" 
   class="form_builder_submit submit_button button_<?=$the_id?> button btn btn-primary" 

@@ -35,12 +35,12 @@
         
     <div class="row mt-4">
     <?php $formBuilder->field(array(
-        'container_class' => 'col-md-4 pl-0',
-        'name' => 'submit',
-        'label'=>'submit',
-        'id'=>'submit', 
-        'type' => 'submit',
-        'input_class'=>'',
+        'container_class' =>  'col-md-4 pl-0',
+        'name'            =>  'submit',
+        'label'           =>  'submit',
+        'id'              =>  'submit', 
+        'type'            =>  'submit',
+        'input_class'     =>  '',
     )); ?>
     <div class="col-md-4 text-center">
       <p class="pl-0" id="forgot_" style="display: none;">Forogt password?&nbsp;<a href="<?php echo site_url()?>/forgot-password/">Reset Here</a></p>
