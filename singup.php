@@ -14,7 +14,7 @@
         'label_col'=>'',
         'input_col'=>''
     )); ?>
-    <?php $formBuilder->field(array(
+    <?php $formBuilder->field([
         'container_class' => 'col-md-6 pr-0',
         'name' => 'last_name',
         'label'=>'Last Name',
@@ -25,7 +25,7 @@
         'input_class'=>'field',
         'label_col'=>'',
         'input_col'=>''
-    )); ?></div>
+    ]); ?></div>
     <?php $formBuilder->field(array(
         'container_class' => 'row',
         'name' => 'username',

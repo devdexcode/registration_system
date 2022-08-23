@@ -1,18 +1,20 @@
 <?php
 /* * * *
  * Class: FormBuilder
- * Version: 4.1
- * Date: 22 Aug, 2022
+ * Version: 5
+ * Date: 23 Aug, 2022
  * Description: Creates form fields
- * Fields: 'text','password', 'textarea', 'email', 'checkbox', 'radio', 'select','countries','kvselect' 'multiselect', 'multiple', 'date','date_special', 'image','wp_color', 'wp_upload', 'range', 'submit'
+ * Fields: 'text','password', 'textarea', 'email', 'checkbox', 'radio', 'select','countries','kvselect' 'multiselect', 'multiple', 'date','date_special', 'image','wp_color', 'wp_upload', 'range', 'submit', 'button', 'reset'
  * * * * */
 class FormBuilder
 {
 
     public $args_help = array(
-        'type' => 'THE TYPE OF THE FIELD, IF LEFT SHALL ASSUMED input type text<hr/>',
-        'name' => 'THE NAME',
-        'id' => 'THE ID',
+        'type'  => 'THE TYPE OF THE FIELD, IF LEFT SHALL ASSUMED input type text<hr/>',
+        'name'  => 'THE NAME',
+        'id'    => 'THE ID',
+        'disabled' => 'TO DISABLE THE FIELD',
+        'readonly' => 'TO MAKE THE FIELD READONLY',
         'label OR placeholder' => 'THE LABEL OR PLACEHOLDER',
         'NOTE FOR THE ABOVE 3' => 'IF ANY ONE OF THE name/id/label WAS PROVIDED, IT WILL TAKE CARE OF THE REST<hr/>',
         'label_col' => 'class of the label column for example col-md-4',
@@ -25,8 +27,8 @@ class FormBuilder
         'options' => 'THE OPTIONS FOR: radio/select/multiple',
         'for range' => 'min & max: ARE MUST',
         'input_class' => 'APPLY COLUMN CLASSES DIRECT TO input EXCEPT ceheckbox/radiobutton/fileupload/multiple', //
-        'NOTE:' => 'Fixed issue for args id to the_id and name the_name same for label.<br/> Want jQuery Validation? just add:  $form_builder = new FormBuilder(); $form_builder->jQuery_validation(); to your footer after jQuery and inside your onclick add: form_validator(".form_builder_submit",".form_builder_field.required"); And added new js classes alpha,numeric,alpha_numeric and alpha_numeric_dash or no_special_chars',
-        'Available types in version 4' => "'wp_color', 'wp_upload','text','password', 'textarea', 'email', 'checkbox', 'radio', 'select','countries','kvselect' 'multiselect', 'multiple', 'date','date_special', 'image', 'range', 'submit' ",
+        'NOTE:' => 'Want jQuery Validation? just add:  $form_builder = new FormBuilder(); $form_builder->jQuery_validation(); to your footer after jQuery and inside your onclick add: form_validator(".form_builder_submit",".form_builder_field.required"); And added new js classes alpha,numeric,alpha_numeric and alpha_numeric_dash or no_special_chars',
+        'Available types in this version' => "'wp_color', 'wp_upload','text','password', 'textarea', 'email', 'checkbox', 'radio', 'select','countries','kvselect' 'multiselect', 'multiple', 'date','date_special', 'image', 'range', 'submit', 'button', 'reset' ",
     );
 
 /****************************|THE FIELD|******************************/
@@ -80,10 +82,8 @@ class FormBuilder
 <?php if (isset($input_col) && $input_col != "") {?><div class="<?php echo $input_col ?> form_builder_col"><?php }?>
     <?php
     if (in_array($type, $types)) {
-        // include 'fields/' . $type . '.php';
         $this->$type($args);
     } else {
-        // include 'fields/text.php';
         $this->text($args);
     }
     ?>
@@ -127,7 +127,9 @@ public function text($args){
   placeholder="<?=$the_label?>" 
   data-id="<?=$the_id?>" 
   minlength="<?=(isset($min) && $min !="") ? $min : '';?>" 
-  maxlength="<?=(isset($max) && $max !="") ? $max : '';?>">
+  maxlength="<?=(isset($max) && $max !="") ? $max : '';?>"
+  <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
+  <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>>
   <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
     <?php 
 }
@@ -141,7 +143,9 @@ public function textarea($args){
         $$k = $v;
     }
     ?>
-  <textarea class="form_builder_field <?=(@$required != ""?'required':'');?> form-control <?=($input_class !="" ? $input_class:''); ?> <?=$the_id?> input-<?=$type;?> field_<?=$the_id?>" id="<?=$the_id?>" name="<?=$the_name?>" <?=(@$required != ""?'required="required"':'');?> placeholder="<?=$the_label?>" data-id="<?=$the_id?>"><?=(@$dbval != ""?$dbval:(isset($_REQUEST[$the_name])?$_REQUEST[$the_name]:''));?></textarea>
+  <textarea class="form_builder_field <?=(@$required != ""?'required':'');?> form-control <?=($input_class !="" ? $input_class:''); ?> <?=$the_id?> input-<?=$type;?> field_<?=$the_id?>" id="<?=$the_id?>" name="<?=$the_name?>" <?=(@$required != ""?'required="required"':'');?> placeholder="<?=$the_label?>" data-id="<?=$the_id?>"
+  <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
+  <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>><?=(@$dbval != ""?$dbval:(isset($_REQUEST[$the_name])?$_REQUEST[$the_name]:''));?></textarea>
   <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
     <?php 
 }
@@ -161,7 +165,9 @@ public function email($args){
   value="<?=(@$dbval != ""?$dbval:(isset($_REQUEST[$the_name])?$_REQUEST[$the_name]:''));?>" 
   <?=(@$required != ""?'required="required"':'');?> 
   placeholder="<?=$the_label?>"
-   data-id="<?=$the_id?>">
+   data-id="<?=$the_id?>"
+  <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
+  <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>>
   <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
     <?php 
 }
@@ -186,7 +192,9 @@ public function checkbox($args){
   name="<?=$the_name?>" 
   value="yes" <?=(@$required != ""?'required="required"':'');?> 
   data-id="<?=$the_id?>" 
-  <?php echo (@$dbval == "yes"?'checked="checked"':(isset($_REQUEST[$the_name]) ? 'checked="checked"':''));?>  style=" display:table-cell;">
+  <?php echo (@$dbval == "yes"?'checked="checked"':(isset($_REQUEST[$the_name]) ? 'checked="checked"':''));?>  style=" display:table-cell;"
+  <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
+  <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>>
   <?php if( @$input_class != "" ) {?>
   </div>
   <?php }?>    
@@ -210,7 +218,9 @@ public function radio($args){
   name="<?=@$the_name?>" 
   <?php echo (@$dbval == @$option?'checked="checked"':(isset($_REQUEST[@$the_name]) && $_REQUEST[@$the_name]==@$option? 'checked="checked"':''));?>
   data-id="<?=@$the_name?>"
-  value="<?=$option;?>">
+  value="<?=$option;?>"
+  <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
+  <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>>
   <span><?=ucfirst(@$option);?></span>
 </label>
 <?php endforeach;?>
@@ -230,7 +240,9 @@ public function select($args){
     }
     ?>
 <select class="form_builder_field <?=(@$required != ""?'required':'');?> <?=$input_class != "" ? $input_class:''; ?> <?=$the_id?> input-<?=$type;?> field_<?=$the_id?> form-control" id="<?=$the_id?>" 
-  name="<?=$the_name?>" data-id="<?=$the_name?>">
+  name="<?=$the_name?>" data-id="<?=$the_name?>"
+  <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
+  <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>>
   <option></option>
 <?php foreach(@$options as $option):?>
     <option value="<?=(@$option);?>" <?php echo (@$dbval == @$option?'selected="selected"':((isset($_REQUEST[@$the_name]) && $_REQUEST[@$the_name]==@$option) ? 'selected="selected"':''));?>><?=ucfirst(@$option);?></option>
@@ -252,7 +264,9 @@ public function multiselect($args){
     }
     ?>
 <select class="form_builder_field <?=(@$required != ""?'required':'');?> <?=$input_class != "" ? $input_class:''; ?> <?=$the_id?> input-<?=$type;?> field_<?=$the_id?> form-control" id="<?=$the_id?>" 
-  name="<?=$the_name?>[]" multiple="multiple" data-id="<?=$the_name?>">
+  name="<?=$the_name?>[]" multiple="multiple" data-id="<?=$the_name?>"
+  <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
+  <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>>
   <option></option>
 <?php foreach(@$options as $option):?>
     <option value="<?=(@$option);?>" <?php echo (@$dbval == $option ?'selected="selected"':(isset($_REQUEST[@$the_name]) && in_array($option,$_REQUEST[@$the_name]) ? 'selected="selected"':''));?>><?=ucfirst(@$option);?></option>
@@ -279,7 +293,9 @@ public function multiple($args){
   name="<?=$the_name?>[]" 
   <?php echo (@$dbval == $option ?'checked="checked"':(isset($_REQUEST[@$the_name]) && in_array($option,$_REQUEST[@$the_name]) ? 'checked="checked"':''));?>
   data-id="<?=$the_name?>"
-  value="<?=$option;?>">
+  value="<?=$option;?>"
+  <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
+  <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>>
   <span><?=ucfirst(@$option);?></span>
   </label>
 <?php endforeach;?>
@@ -299,7 +315,9 @@ public function countries($args){
     ?>
  <?php $countries = array("Afghanistan", "Albania", "Algeria", "American Samoa", "Andorra", "Angola", "Anguilla", "Antarctica", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia", "Bosnia and Herzegowina", "Botswana", "Bouvet Island", "Brazil", "British Indian Ocean Territory", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Cayman Islands", "Central African Republic", "Chad", "Chile", "China", "Christmas Island", "Cocos (Keeling) Islands", "Colombia", "Comoros", "Congo", "Congo, the Democratic Republic of the", "Cook Islands", "Costa Rica", "Cote d'Ivoire", "Croatia (Hrvatska)", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "East Timor", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia", "Falkland Islands (Malvinas)", "Faroe Islands", "Fiji", "Finland", "France", "France Metropolitan", "French Guiana", "French Polynesia", "French Southern Territories", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Grenada", "Guadeloupe", "Guam", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Heard and Mc Donald Islands", "Holy See (Vatican City State)", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran (Islamic Republic of)", "Iraq", "Ireland", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea, Democratic People's Republic of", "Korea, Republic of", "Kuwait", "Kyrgyzstan", "Lao, People's Democratic Republic", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libyan Arab Jamahiriya", "Liechtenstein", "Lithuania", "Luxembourg", "Macau", "Macedonia, The Former Yugoslav Republic of", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Martinique", "Mauritania", "Mauritius", "Mayotte", "Mexico", "Micronesia, Federated States of", "Moldova, Republic of", "Monaco", "Mongolia", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "Netherlands Antilles", "New Caledonia", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Niue", "Norfolk Island", "Northern Mariana Islands", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Pitcairn", "Poland", "Portugal", "Puerto Rico", "Qatar", "Reunion", "Romania", "Russian Federation", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Seychelles", "Sierra Leone", "Singapore", "Slovakia (Slovak Republic)", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Georgia and the South Sandwich Islands", "Spain", "Sri Lanka", "St. Helena", "St. Pierre and Miquelon", "Sudan", "Suriname", "Svalbard and Jan Mayen Islands", "Swaziland", "Sweden", "Switzerland", "Syrian Arab Republic", "Taiwan, Province of China", "Tajikistan", "Tanzania, United Republic of", "Thailand", "Togo", "Tokelau", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Turks and Caicos Islands", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "United States Minor Outlying Islands", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "Virgin Islands (British)", "Virgin Islands (U.S.)", "Wallis and Futuna Islands", "Western Sahara", "Yemen", "Yugoslavia", "Zambia", "Zimbabwe");?>
 <select class="form_builder_field <?=(@$required != ""?'required':'');?> <?=$input_class != "" ? $input_class:''; ?> <?=$the_id?> input-<?=$type;?> type-select field_<?=$the_id?> form-control" id="<?=$the_id?>" 
-  name="<?=$the_name?>" data-id="<?=$the_name?>">
+  name="<?=$the_name?>" data-id="<?=$the_name?>"
+  <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
+  <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>>
   <option></option>
 <?php foreach(@$countries as $country):?>
     <option value="<?=(@$country);?>" <?php echo (@$dbval == @$country?'selected="selected"':((isset($_REQUEST[@$the_name]) && $_REQUEST[@$the_name]==@$country) ? 'selected="selected"':''));?>><?=ucfirst(@$country);?></option>
@@ -328,7 +346,9 @@ public function password($args){
   <?=(@$required != ""?'required="required"':'');?> 
   placeholder="<?=$the_label?>" 
   data-id="<?=$the_id?>" 
-  minlength="<?=(isset($min) && $min !="") ? $min : '';?>" maxlength="<?=(isset($max) && $max !="") ? $max : '';?>">
+  minlength="<?=(isset($min) && $min !="") ? $min : '';?>" maxlength="<?=(isset($max) && $max !="") ? $max : '';?>"
+  <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
+  <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>>
   <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
     <?php 
 }
@@ -352,7 +372,9 @@ class="form_builder_field <?=(@$required != ""?'required':'');?> form-control <?
  value="<?=(@$dbval != ""?$dbval:(isset($_REQUEST[$the_name])?$_REQUEST[$the_name]:''));?>" 
  <?=(@$required != ""?'required="required"':'');?> 
  data-id="<?=$the_id?>" 
- data-date="<?=$the_date;?>">
+ data-date="<?=$the_date;?>"
+  <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
+  <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>>
 </div>
 <div class="response description"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
     <?php 
@@ -368,7 +390,9 @@ public function kvselect($args){
     }
     ?>
 <select class="form_builder_field <?=(@$required != ""?'required':'');?> <?=$input_class != "" ? $input_class:''; ?> <?=$the_id?> input-<?=$type;?> type-select kvselect field_<?=$the_id?> form-control" id="<?=$the_id?>" 
-  name="<?=$the_name?>" data-id="<?=$the_name?>">
+  name="<?=$the_name?>" data-id="<?=$the_name?>"
+  <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
+  <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>>
   <option></option>
 <?php foreach(@$options as $k => $v):?>
     <option value="<?=(@$k);?>" <?php echo (@$dbval == @$k?'selected="selected"':((isset($_REQUEST[@$the_name]) && $_REQUEST[@$the_name]==@$k) ? 'selected="selected"':''));?>><?=ucfirst(@$v);?></option>
@@ -399,7 +423,9 @@ public function image($args){
     <?=(@$required != "" ? 'required="required"' : '');?>
      accept="image/*" 
      style="width:70%;"
-     onChange="document.getElementById('<?=$the_id?>_preview').src = window.URL.createObjectURL(this.files[0]);document.getElementById('<?=$the_id?>_preview').style.display = 'block'"/>
+     onChange="document.getElementById('<?=$the_id?>_preview').src = window.URL.createObjectURL(this.files[0]);document.getElementById('<?=$the_id?>_preview').style.display = 'block'"
+  <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
+  <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>>
     <!-- <button type="button" id="<?=$the_name?>_btn" class="btn btn-info btn-upload">Upload</button> -->
     <img src="<?=(@$dbval != "" ? $dbval : '');?>" id="<?=$the_name?>_preview" class="img-disp pull-right img-thumbnail" style="max-width:90px;display:none;"/>
     <div class="col-sm-12 text-danger" id="<?=$the_name?>_photo_resp"></div>
@@ -427,7 +453,9 @@ public function date_special($args){
      value="<?=(@$dbval != ""?$dbval:(isset($_REQUEST[$the_name])?$_REQUEST[$the_name]:''));?>" 
      <?=(@$required != ""?'required="required"':'');?> 
      data-id="<?=$the_id?>" 
-     data-date="<?=$the_date;?>">
+     data-date="<?=$the_date;?>"
+  <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
+  <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>>
      <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
      <script>
 (function($){
@@ -462,7 +490,9 @@ class="form_builder_field  form-control <?=(@$required != ""?'required':'');?> <
 name="weight" id="<?=$the_id?>" 
 value="<?=(@$dbval != ""?$dbval:(isset($_REQUEST[$the_name])?$_REQUEST[$the_name]:''));?>" <?=(@$required != ""?'required="required"':'');?>
 min="<?=@$min?>" max="<?=@$max?>" 
-oninput="range_weight_disp.value = <?=$the_name?>.value">
+oninput="range_weight_disp.value = <?=$the_name?>.value"
+  <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
+  <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>>
    <output id="range_weight_disp"><?=$_POST[$the_name];?></output>
    <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
 </div>   
@@ -483,7 +513,9 @@ public function color($args){
   id="<?=$the_id?>" name="<?=$the_name?>" 
   value="<?=(@$dbval != ""?$dbval:'');?>" 
   <?=(@$required != ""?'required="required"':'');?> 
-  data-id="<?=$the_id?>">
+  data-id="<?=$the_id?>"
+  <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
+  <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>>
   <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
     <?php 
 }
@@ -500,7 +532,9 @@ public function wp_upload($args){
     ?>
 <input type="text" readonly name="<?=$the_name?>" id="<?=$the_id?>" value="<?= ($dbval  != "") ? ($dbval ) : ''; ?>" 
 class=" col-sm-6 form-control <?=isset($type_class) && $type_class!="" ? $type_class :'';?><?=(@$required != ""?'required':'');?> form_builder_field form-control <?=$input_class != "" ? $input_class:''; ?> <?=$the_id?> input-<?=$type;?> field_<?=$the_id?>" />
-<input class="btn btn-primary" type="button" name="<?=$the_id?>" id="<?=$the_id?>-btn" class="btn btn-primary" value="Upload Image" data-id="<?=$the_id?>">
+<input class="btn btn-primary" type="button" name="<?=$the_id?>" id="<?=$the_id?>-btn" class="btn btn-primary" value="Upload Image" data-id="<?=$the_id?>"
+  <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
+  <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>>
 <div class="<?=$the_id?>_imagearea  col-sm-3">
     <div class="images_parent_class">
         <div class="<?=$the_id?>-delete delete_btn">X</div>
@@ -559,7 +593,51 @@ public function submit($args){
   <button type="submit" 
   class="form_builder_submit submit_button button_<?=$the_id?> button btn btn-primary" 
   id="<?=$the_id?>" name="<?=$the_name?>" 
-  data-id="<?=$the_id?>"><?=$the_label?></button>
+  data-id="<?=$the_id?>"
+  <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
+  <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>><?=$the_label?></button>
+  <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
+    <?php 
+}
+
+
+
+/* 
+ * 19. BUTTON
+ * * * * * * * * */
+public function button($args){
+    foreach ($args as $k => $v) {
+        $$k = $v;
+    } 
+    ?>
+  <button type="button" 
+  class="form_builder_button type_button button_<?=$the_id?> button btn" 
+  id="<?=$the_id?>" name="<?=$the_name?>" 
+  data-id="<?=$the_id?>"
+  <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
+  <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>><?=$the_label?></button>
+  <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
+    <?php 
+}
+
+
+
+
+
+/* 
+ * 20. RESET
+ * * * * * * * * */
+public function reset($args){
+    foreach ($args as $k => $v) {
+        $$k = $v;
+    } 
+    ?>
+  <button type="reset" 
+  class="form_builder_reset type_reset button_<?=$the_id?> button btn" 
+  id="<?=$the_id?>" name="<?=$the_name?>" 
+  data-id="<?=$the_id?>"
+  <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
+  <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>><?=$the_label?></button>
   <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
     <?php 
 }
