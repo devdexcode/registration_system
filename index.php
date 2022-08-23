@@ -4,7 +4,7 @@ Plugin Name: wp_lite Signup
 Plugin URI: 
 Description: [signin_form][signup_form][user_activation][wp_lite_dashboard][wp_lite_forgot_password] in later versions: sanitzation, auto generate pages, add admin page with dynamic fields.
 Author:  Aamir Hussain
-Version: 1.0
+Version: 1.1
 Author URI: 
 Text Domain: wp_lite signup
 */
@@ -31,7 +31,7 @@ if (!current_user_can('administrator') && !is_admin()) {
  *  ASSETS
  * **/
 function assets(){
-    include_once(PATH.'/FormBuilder-V-3/FormBuilder.php');
+    include_once(PATH.'/FormBuilder.php');
 ?>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <style>html{scroll-behavior: smooth !important;}#response{padding:10px 0;}.error{color: #dc3545 !important;}.form-control.error{border-color: #dc3545 !important;}#response a{display: none !important;}</style>
