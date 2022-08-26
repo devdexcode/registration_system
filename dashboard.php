@@ -4,7 +4,10 @@
     <a class="nav-link active btn btn-outline-secondary text-left" title="Dashboard" href="#dashboard" data-toggle="tab">Dashboard</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link btn btn-outline-secondary text-left" title="Profile" href="#profile" data-toggle="tab">Profile</a>
+    <a class="nav-link btn btn-outline-secondary text-left" title="Profile" href="#profile" data-toggle="tab">Basic Information</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link btn btn-outline-secondary text-left" title="Chagnge Password" href="#change_password_tab" data-toggle="tab">Change Password</a>
   </li>
   <li class="nav-item">
     <a class="nav-link btn btn-outline-secondary text-left" href="#address" title="Address" data-toggle="tab">Address</a>
@@ -101,13 +104,34 @@
       'label_col'=>'',
       'input_col'=>'',
       'dbval'=>$email,
-      'description'=>''
+      'description'=>'',
+      'disabled'=>'disabled',
+      'description'=>'(User Email can not be changed!)'
     ]); ?>
 
+   <!-- <div class="row"> Want to change password? &nbsp; <a href="#chPassForm"> Reset it here </a></div> -->
+
+    <div class="row mt-4">
+      <?php $formBuilder->field([
+        'container_class' => 'col-md-8 pl-0',
+        'name' => 'submit',
+        'label'=>'Update profile',
+        'id'=>'update_profile', 
+        'type' => 'submit',
+        'input_class'=>'',
+      ]); ?>
+    </div>
+ 
+</form>
+
+</article>
+<article class="tab-pane container" id="change_password_tab">
+    <form action="#" name="change_password_form" id="change_password_form">
+      <div class="row" id="response_password"></div>
     <?php $formBuilder->field([
       'container_class' => 'row',
       'name' => 'user_password',
-      'label'=>'Enter old password',
+      'label'=>'Enter current password',
       'id'=>'user_password',
       'required' => 'required',
       'type' => 'password',
@@ -115,7 +139,7 @@
       'input_class'=>'field password',
       'label_col'=>'',
       'input_col'=>'',
-      'description'=>'(Leave blank to keep it unchanged)',
+      // 'description'=>'(Leave blank to keep it unchanged)',
       // 'dbval'=> wp_hash_password($current_user->user_pass)
     ]); ?>
     <hr class="row pt-4 pb-4"> 
@@ -131,10 +155,7 @@
       'input_class'=>'field',
       'label_col'=>'',
       'input_col'=>''
-    ]); ?>
-
-
-<?php $formBuilder->field([
+    ]); ?>  <?php $formBuilder->field([
   'container_class' => 'col-md-6 pr-0 mb-0',
   'name' => 'user_password_new_repeat',
   'label'=>'repeat new password',
@@ -146,24 +167,24 @@
   'label_col'=>'',
   'input_col'=>''
 ]); ?></div>
-    <div class="row mt-4">
+
+<div class="row mt-4">
       <?php $formBuilder->field([
         'container_class' => 'col-md-8 pl-0',
-        'name' => 'submit',
-        'label'=>'Update profile',
-        'id'=>'update_profile', 
+        'name' => 'change_password',
+        'label'=>'Update Password',
+        'id'=>'change_password', 
         'type' => 'submit',
         'input_class'=>'',
       ]); ?>
-    </div>
- 
-</form>
+</div>
 
+    </form>
 </article>
-
 <article class="tab-pane container" id="address">
   <div class="row"><h3>Address</h3></div>
-  <div id="response"></div>
+  <form action="#" id="update_address_form" name="update_address_form">
+  <div id="response_update_address"></div>
   <div class="row">
         <?php 
     $billing_country       =   get_user_meta($current_user->ID,'billing_country',true );
@@ -261,7 +282,7 @@
         $formBuilder->field([
             'container_class' => 'col-md-6 pl-0 mb-0',
             'name' => 'billing_phone',
-            'label'=>'City',
+            'label'=>'Phone Number',
             'id'=>'billing_phone',
             'required' => 'required',
             'type' => 'text',
@@ -301,25 +322,26 @@
     <div class="row mt-4">
       <?php $formBuilder->field([
         'container_class' => 'col-md-8 pl-0',
-        'name' => 'submit',
+        'name' => 'update_address',
         'label'=>'Update Information',
-        'id'=>'submit', 
+        'id'=>'update_address', 
         'type' => 'submit',
         'input_class'=>'',
       ]); ?>
     </div>
+    </form>
 </article>
 
 </div>
 
 <script>
 $(document).ready(function () {        
-//Validation init
+//Update profile
 $(document).on('click','#update_profile',function(event){
      
       event.preventDefault();
     let the_url = "<?php echo admin_url('admin-ajax.php') ?>?action=wp_update_profile";
-    let form_data = $('#profile_form').serialize();
+    let form_data = $('#response_update_address').serialize();
       $.ajax({
         url: the_url,
         type: "post",
@@ -328,17 +350,69 @@ $(document).on('click','#update_profile',function(event){
       }).done(function (response) {
           // console.log(response);
         if (response.Status == 1) { 
-          $('#response_profile').removeClass('text-danger').addClass('text-success').html(response.msg).show();//.delay(30000).fadeOut();
+          $('#response_update_address').removeClass('text-danger').addClass('text-success').html(response.msg).show();//.delay(30000).fadeOut();
            $("html, body").animate({ scrollTop: $('#response_profile') }, 2500);
           $('#signup>.container').hide();
         }else{
-          $('#response_profile').addClass('text-danger').html(response.msg).show().delay(10000).fadeOut();
+          $('#response_update_address').addClass('text-danger').html(response.msg).show().delay(10000).fadeOut();
            $("html, body").animate({ scrollTop: $("#response_profile") }, 1500);
         }
       }); //ajax done
       
  
-});//ends on click
-      
+});//ends update profile
+
+// change_password
+$(document).on('click','#change_password',function(event){
+     
+   event.preventDefault();
+   let the_url = "<?php echo admin_url('admin-ajax.php') ?>?action=wp_change_profile_password";
+   let form_data = $('#change_password_form').serialize();
+     $.ajax({
+       url: the_url,
+       type: "post",
+       dataType: "json",
+       data: form_data,
+     }).done(function (response) {
+         // console.log(response);
+       if (response.Status == 1) { 
+         $('#response_password').removeClass('text-danger').addClass('text-success').html(response.msg).show();//.delay(30000).fadeOut();
+          $("html, body").animate({ scrollTop: $('#response_password') }, 2500);
+         $('#signup>.container').hide();
+       }else{
+         $('#response_password').addClass('text-danger').html(response.msg).show().delay(10000).fadeOut();
+          $("html, body").animate({ scrollTop: $("#response_password") }, 1500);
+       }
+     }); //ajax done
+     
+
+});//ends change password
+
+// update_address
+$(document).on('click','#update_address',function(event){
+  
+   event.preventDefault();
+   let the_url = "<?php echo admin_url('admin-ajax.php') ?>?action=wp_update_user_address";
+   let form_data = $('#update_address_form').serialize();
+     $.ajax({
+       url: the_url,
+       type: "post",
+       dataType: "json",
+       data: form_data,
+     }).done(function (response) {
+         // console.log(response);
+       if (response.Status == 1) { 
+         $('#response_update_address').removeClass('text-danger').addClass('text-success').html(response.msg).show();//.delay(30000).fadeOut();
+          $("html, body").animate({ scrollTop: $('#response_update_address') }, 2500);
+         $('#signup>.container').hide();
+       }else{
+         $('#response_update_address').addClass('text-danger').html(response.msg).show().delay(10000).fadeOut();
+          $("html, body").animate({ scrollTop: $("#response_update_address") }, 1500);
+       }
+     }); //ajax done
+     
+
+});//ends change password
+
 });//ends doc ready
 </script> 
