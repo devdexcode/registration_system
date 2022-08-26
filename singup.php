@@ -3,7 +3,7 @@
   <div class="container"><?php if(is_user_logged_in()){ wp_safe_redirect(home_url()); exit();} ?>
     <div class="form_builder_row name_container row">
       <?php $formBuilder->field(array(
-        'container_class' => 'col-md-6 pl-0',
+        'container_class' => 'col-md-6 pl-0 mb-0',
         'name' => 'first_name',
         'label'=>'First Name',
         'id'=>'first_name',
@@ -15,7 +15,7 @@
         'input_col'=>''
     )); ?>
     <?php $formBuilder->field([
-        'container_class' => 'col-md-6 pr-0',
+        'container_class' => 'col-md-6 pr-0 mb-0',
         'name' => 'last_name',
         'label'=>'Last Name',
         'id'=>'last_name',
@@ -77,7 +77,7 @@
   </div>
     
   </div></form>
-    <script>
+<script>
 $(document).ready(function () {        
 //Validation init
 $(document).on('click','#submit',function(event){

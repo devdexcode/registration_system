@@ -66,6 +66,48 @@ function wp_signup()
 }
 
 /***
+ * Update Profile
+ * ***/
+add_action('wp_ajax_wp_update_profile', 'wp_update_profile');
+add_action('wp_ajax_nopriv_wp_update_profile', 'wp_update_profile');
+
+    function wp_update_profile(){
+        $update_info = array();
+        global $current_user;
+        foreach ($_REQUEST as $k => $v) {
+            $$k = $v;
+        }
+    
+
+
+
+  $pass_check = wp_check_password( $user_password, $current_user->user_pass, $current_user->data->ID );
+    if($pass_check != 1 && $user_password_new != ""){
+        // wp_set_password($user_password, $user_id);
+        // $user_updated = wp_update_user( $update_info );
+        $message = "Please enter the correct pssword to update to new password.";
+        $status = 0;
+    }elseif($user_password_new != "" && $user_password == ""){
+        $message = "Please enter your current password to update to new password!";
+        $status = 0;
+    }elseif($user_password_new != $user_password_new_repeat){
+        $message = "Passwords do not match! please re-check and try again with your new password and confirm your password.";
+        $status = 0;
+    }elseif($user_password_new > 0 && $user_password_new < 6){
+        $message = "Password must be at least 6 characters.";
+        $status = 0;
+    }else { 
+        $user_pass_update = isset($user_new_password) ? $user_new_password :'';       
+        $user_updated = wp_update_user( array('ID' => $user_id, 'first_name' => $first_name, 'last_name' => $last_name, 'nickname' => $nickname, 'user_email' => $user_email, 'user_password' => $user_pass_update ));
+        wp_set_password($user_password_new, $user_id);
+        $message = "Information updated successfully.";
+        $status = 1;        
+    }
+    echo json_encode(array('Status' => $status, 'msg' => $message, 'uid' => $user_id, 'update_info' => $update_info, 'user_updated'=>$user_updated ));
+    exit;
+}
+
+/***
  * ADD OR UPDATE USERMETA:Based on Existance
  * **/
 // function add_update_usermeta($userID, $key, $to_save)

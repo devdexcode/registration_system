@@ -1,8 +1,8 @@
 <?php
 /* * * *
  * Class: FormBuilder
- * Version: 5
- * Date: 23 Aug, 2022
+ * Version: 5.4
+ * Date: 24 Aug, 2022
  * Description: Creates form fields
  * Fields: 'text','password', 'textarea', 'email', 'checkbox', 'radio', 'select','countries','kvselect' 'multiselect', 'multiple', 'date','date_special', 'image','wp_color', 'wp_upload', 'range', 'submit', 'button', 'reset'
  * * * * */
@@ -27,7 +27,7 @@ class FormBuilder
         'options' => 'THE OPTIONS FOR: radio/select/multiple',
         'for range' => 'min & max: ARE MUST',
         'input_class' => 'APPLY COLUMN CLASSES DIRECT TO input EXCEPT ceheckbox/radiobutton/fileupload/multiple', //
-        'NOTE:' => 'Want jQuery Validation? just add:  $form_builder = new FormBuilder(); $form_builder->jQuery_validation(); to your footer after jQuery and inside your onclick add: form_validator(".form_builder_submit",".form_builder_field.required"); And added new js classes alpha,numeric,alpha_numeric and alpha_numeric_dash or no_special_chars',
+        'NOTE:' => 'Want jQuery Validation? must add custom js functinos or libraries as this is a php-only class yet.', 
         'Available types in this version' => "'wp_color', 'wp_upload','text','password', 'textarea', 'email', 'checkbox', 'radio', 'select','countries','kvselect' 'multiselect', 'multiple', 'date','date_special', 'image', 'range', 'submit', 'button', 'reset' ",
     );
 
@@ -103,7 +103,7 @@ class FormBuilder
         $str = preg_replace('/  */', ' ', $str);
         $str = preg_replace('/-/', ' ', $str);
         $str = preg_replace('/_/', ' ', $str);
-        return $str;
+        return ucfirst($str);
     }
  
 /**********************************************************************************************************************/
@@ -130,7 +130,7 @@ public function text($args){
   maxlength="<?=(isset($max) && $max !="") ? $max : '';?>"
   <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
   <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>>
-  <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
+  <small class="description response font-italic text-small text-muted pl-1"> <?php echo  $description !="" ? ucfirst($description) :'';?></small>
     <?php 
 }
 
@@ -146,7 +146,7 @@ public function textarea($args){
   <textarea class="form_builder_field <?=(@$required != ""?'required':'');?> form-control <?=($input_class !="" ? $input_class:''); ?> <?=$the_id?> input-<?=$type;?> field_<?=$the_id?>" id="<?=$the_id?>" name="<?=$the_name?>" <?=(@$required != ""?'required="required"':'');?> placeholder="<?=$the_label?>" data-id="<?=$the_id?>"
   <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
   <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>><?=(@$dbval != ""?$dbval:(isset($_REQUEST[$the_name])?$_REQUEST[$the_name]:''));?></textarea>
-  <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
+  <small class="description response font-italic text-small text-muted pl-1"> <?php echo  $description !="" ? $description :'';?></small>
     <?php 
 }
 
@@ -168,7 +168,7 @@ public function email($args){
    data-id="<?=$the_id?>"
   <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
   <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>>
-  <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
+  <small class="description response font-italic text-small text-muted pl-1"> <?php echo  $description !="" ? ucfirst($description) :'';?></small>
     <?php 
 }
 
@@ -198,7 +198,7 @@ public function checkbox($args){
   <?php if( @$input_class != "" ) {?>
   </div>
   <?php }?>    
-  <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
+  <small class="description response font-italic text-small text-muted pl-1"> <?php echo  $description !="" ? ucfirst($description) :'';?></small>
     <?php 
 }
 
@@ -224,7 +224,7 @@ public function radio($args){
   <span><?=ucfirst(@$option);?></span>
 </label>
 <?php endforeach;?>
-  <div class="response description"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
+  <small class="description response font-italic text-small text-muted pl-1"> <?php echo  $description !="" ? ucfirst($description) :'';?></small>
     <?php 
 }
 
@@ -248,7 +248,7 @@ public function select($args){
     <option value="<?=(@$option);?>" <?php echo (@$dbval == @$option?'selected="selected"':((isset($_REQUEST[@$the_name]) && $_REQUEST[@$the_name]==@$option) ? 'selected="selected"':''));?>><?=ucfirst(@$option);?></option>
 <?php endforeach;?>
 </select>
-  <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
+  <small class="description response font-italic text-small text-muted pl-1"> <?php echo  $description !="" ? ucfirst($description) :'';?></small>
     <?php 
 }
 
@@ -272,7 +272,7 @@ public function multiselect($args){
     <option value="<?=(@$option);?>" <?php echo (@$dbval == $option ?'selected="selected"':(isset($_REQUEST[@$the_name]) && in_array($option,$_REQUEST[@$the_name]) ? 'selected="selected"':''));?>><?=ucfirst(@$option);?></option>
 <?php endforeach;?>
 </select>
-  <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
+  <small class="description response font-italic text-small text-muted pl-1"> <?php echo  $description !="" ? ucfirst($description) :'';?></small>
     <?php 
 }
 
@@ -299,7 +299,7 @@ public function multiple($args){
   <span><?=ucfirst(@$option);?></span>
   </label>
 <?php endforeach;?>
-<div class=" response description"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
+<small class="description response font-italic text-small text-muted pl-1"> <?php echo  $description !="" ? ucfirst($description) :'';?></small>
     <?php 
 }
 
@@ -323,7 +323,7 @@ public function countries($args){
     <option value="<?=(@$country);?>" <?php echo (@$dbval == @$country?'selected="selected"':((isset($_REQUEST[@$the_name]) && $_REQUEST[@$the_name]==@$country) ? 'selected="selected"':''));?>><?=ucfirst(@$country);?></option>
 <?php endforeach;?>
 </select>
-  <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
+  <small class="description response font-italic text-small text-muted pl-1"> <?php echo  $description !="" ? ucfirst($description) :'';?></small>
     <?php 
 }
 
@@ -349,7 +349,7 @@ public function password($args){
   minlength="<?=(isset($min) && $min !="") ? $min : '';?>" maxlength="<?=(isset($max) && $max !="") ? $max : '';?>"
   <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
   <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>>
-  <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
+  <small class="description response font-italic text-small text-muted pl-1"> <?php echo  $description !="" ? ucfirst($description) :'';?></small>
     <?php 
 }
 
@@ -376,7 +376,7 @@ class="form_builder_field <?=(@$required != ""?'required':'');?> form-control <?
   <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
   <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>>
 </div>
-<div class="response description"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
+<small class="description response font-italic text-small text-muted pl-1"> <?php echo  $description !="" ? ucfirst($description) :'';?></small>
     <?php 
 }
 
@@ -398,7 +398,7 @@ public function kvselect($args){
     <option value="<?=(@$k);?>" <?php echo (@$dbval == @$k?'selected="selected"':((isset($_REQUEST[@$the_name]) && $_REQUEST[@$the_name]==@$k) ? 'selected="selected"':''));?>><?=ucfirst(@$v);?></option>
 <?php endforeach;?>
 </select>
-  <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
+  <small class="description response font-italic text-small text-muted pl-1"> <?php echo  $description !="" ? ucfirst($description) :'';?></small>
     <?php 
 }
 
@@ -429,7 +429,7 @@ public function image($args){
     <!-- <button type="button" id="<?=$the_name?>_btn" class="btn btn-info btn-upload">Upload</button> -->
     <img src="<?=(@$dbval != "" ? $dbval : '');?>" id="<?=$the_name?>_preview" class="img-disp pull-right img-thumbnail" style="max-width:90px;display:none;"/>
     <div class="col-sm-12 text-danger" id="<?=$the_name?>_photo_resp"></div>
-    <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
+    <small class="description response font-italic text-small text-muted pl-1"> <?php echo  $description !="" ? ucfirst($description) :'';?></small>
 </div>
     <?php 
 }
@@ -470,7 +470,7 @@ public function date_special($args){
 })(jQuery);
 </script>    
 </div>
-<div class="response description"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
+<small class="description response font-italic text-small text-muted pl-1"> <?php echo  $description !="" ? ucfirst($description) :'';?></small>
     <?php 
 }
 
@@ -494,7 +494,7 @@ oninput="range_weight_disp.value = <?=$the_name?>.value"
   <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
   <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>>
    <output id="range_weight_disp"><?=$_POST[$the_name];?></output>
-   <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
+   <small class="description response font-italic text-small text-muted pl-1"> <?php echo  $description !="" ? ucfirst($description) :'';?></small>
 </div>   
     <?php 
 }
@@ -516,7 +516,7 @@ public function color($args){
   data-id="<?=$the_id?>"
   <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
   <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>>
-  <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
+  <small class="description response font-italic text-small text-muted pl-1"> <?php echo  $description !="" ? ucfirst($description) :'';?></small>
     <?php 
 }
 
@@ -542,7 +542,7 @@ class=" col-sm-6 form-control <?=isset($type_class) && $type_class!="" ? $type_c
     </div>
 </div>
 
-<div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
+<small class="description response font-italic text-small text-muted pl-1"> <?php echo  $description !="" ? ucfirst($description) :'';?></small>
         <script>
 var $ = jQuery;
 jQuery(document).ready(function ($) {
@@ -596,7 +596,7 @@ public function submit($args){
   data-id="<?=$the_id?>"
   <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
   <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>><?=$the_label?></button>
-  <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
+  <small class="description response font-italic text-small text-muted pl-1"> <?php echo  $description !="" ? ucfirst($description) :'';?></small>
     <?php 
 }
 
@@ -616,7 +616,7 @@ public function button($args){
   data-id="<?=$the_id?>"
   <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
   <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>><?=$the_label?></button>
-  <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
+  <small class="description response font-italic text-small text-muted pl-1"> <?php echo  $description !="" ? ucfirst($description) :'';?></small>
     <?php 
 }
 
@@ -638,7 +638,7 @@ public function reset($args){
   data-id="<?=$the_id?>"
   <?=(isset($readonly) && $readonly !="") ? 'readonly="readonly"' : '';?>
   <?=(isset($disabled) && $disabled !="") ? 'disabled="disabled"' : '';?>><?=$the_label?></button>
-  <div class="description response"><?=@$desc || @$description !=""?@$desc || @$description :'';?></div>
+  <small class="description response font-italic text-small text-muted pl-1"> <?php echo  $description !="" ? ucfirst($description) :'';?></small>
     <?php 
 }
 

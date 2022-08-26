@@ -4,7 +4,7 @@ Plugin Name: wp_lite Signup
 Plugin URI: 
 Description: [signin_form][signup_form][user_activation][wp_lite_dashboard][wp_lite_forgot_password] in later versions: sanitzation, auto generate pages, add admin page with dynamic fields.
 Author:  Aamir Hussain
-Version: 1.2
+Version: 2
 Author URI: 
 Text Domain: wp_lite signup
 */
@@ -80,9 +80,11 @@ add_shortcode('wp_lite_dashboard', 'wp_lite_dashboard_cb');
 
 function wp_lite_dashboard_cb(){
   if(!is_user_logged_in()){ wp_safe_redirect(home_url()); exit();}
-  $current_user = wp_get_current_user();?>
-  <h3>Welcome <?php echo $current_user->user_login?>!</h3>
-  <a href="<?php echo wp_logout_url( home_url('/signin/') ); ?>" title="Logout">Signout?</a>
+  $current_user = wp_get_current_user();
+  assets();
+  $formBuilder = new FormBuilder(); 
+  ob_start();?>
+<?php include_once(PATH.'dashboard.php');?>   
 <?php 
 $html = ob_get_clean();
 return $html;
