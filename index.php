@@ -11,7 +11,9 @@ Text Domain: wp_lite signup
 $path = plugin_dir_path( __FILE__ );
 define('PATH', $path);
 
+
  function active(){
+   
   update_option( 'wp_lite_signup_activated', time() );
   $pages = [
     [
@@ -35,9 +37,8 @@ define('PATH', $path);
       'page_content'  => '[wp_lite_forgot_password]'
     ],
   ];
-print_r($pages);
   foreach($pages as $page){
-    wpl_create_page($page_title, $page_content);
+    wpl_create_page($page['page_title'], $page['page_content']);
   }
 }
 register_activation_hook(__FILE__,   'active');
