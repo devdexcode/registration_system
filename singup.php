@@ -64,15 +64,15 @@
     )); ?>
     <div class="row mt-4">
     <?php $formBuilder->field(array(
-        'container_class' => 'col-md-8 pl-0',
+        'container_class' => 'col-md-6 pl-0',
         'name' => 'submit',
         'label'=>'submit',
         'id'=>'submit', 
         'type' => 'submit',
         'input_class'=>'',
     )); ?>
-    <div class="col-md-4 pr-0 text-right">
-      <p>Already have an account? <a href="<?php echo site_url();?>/signin">Sign-in here</a></p>
+    <div class="col-md-6 pr-0 text-right">
+      <p style="font-size:13px;">Already have an account?<br/> <a href="<?php echo site_url();?>/signin">Sign-in here</a></p>
     </div>  
   </div>
     

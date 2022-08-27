@@ -35,21 +35,23 @@
         
     <div class="row mt-4">
     <?php $formBuilder->field(array(
-        'container_class' =>  'col-md-4 pl-0',
+        'container_class' =>  'col-md-6 pl-0',
         'name'            =>  'submit',
         'label'           =>  'submit',
         'id'              =>  'submit', 
         'type'            =>  'submit',
         'input_class'     =>  '',
     )); ?>
-    <div class="col-md-4 text-center">
-      <p class="pl-0" id="forgot_" style="display: none;">Forogt password?&nbsp;<a href="<?php echo site_url()?>/forgot-password/">Reset Here</a></p>
-    </div> 
-    <div class="col-md-4 pr-0 text-right">
-      <p class="pl-0 text-right"">Don't have an account?&nbsp;<a href="<?php echo site_url()?>/signup/">Sign-up Here</a></p>
+
+    <div class="col-md-6 pr-0 text-right">
+      <p class="pl-0 text-right" style="font-size:13px;">Don't have an account?<br/><a href="<?php echo site_url()?>/signup/">Sign-up Here</a></p>
     </div>  
   </div>
-    
+    <div class="row">
+    <div class="col-md-12 text-center">
+      <p class="pl-0" id="forgot_" style="display: none; font-size:13px;">Forogt password?&nbsp;<a href="<?php echo site_url()?>/forgot-password/">Reset Here</a></p>
+    </div> 
+    </div>
 
 </div></form>
 

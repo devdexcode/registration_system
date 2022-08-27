@@ -4,13 +4,75 @@ Plugin Name: wp_lite Signup
 Plugin URI: 
 Description: [signin_form][signup_form][user_activation][wp_lite_dashboard][wp_lite_forgot_password] in later versions: sanitzation, auto generate pages, layout css to display responses more better, add admin page with dynamic fields.
 Author:  Aamir Hussain
-Version: 2
+Version: 3
 Author URI: 
 Text Domain: wp_lite signup
 */
 $path = plugin_dir_path( __FILE__ );
 define('PATH', $path);
 
+ function active(){
+  update_option( 'wp_lite_signup_activated', time() );
+  $pages = [
+    [
+      'page_title'    => 'Signin',
+      'page_content'  => '[signin_form]'
+    ],
+    [
+      'page_title'    => 'signup',
+      'page_content'  => '[signup_form]'
+    ],
+    [
+      'page_title'    => 'User Activation',
+      'page_content'  => '[user_activation]'
+    ],
+    [
+      'page_title'    => 'Profile',
+      'page_content'  => '[wp_lite_dashboard]'
+    ],
+    [
+      'page_title'    => 'Forgot Password',
+      'page_content'  => '[wp_lite_forgot_password]'
+    ],
+  ];
+print_r($pages);
+  foreach($pages as $page){
+    wpl_create_page($page_title, $page_content);
+  }
+}
+register_activation_hook(__FILE__,   'active');
+
+function wpl_create_page($page_title, $page_content)
+{
+    $page_obj = get_page_by_title($page_title, 'OBJECT', 'page');
+
+    if ($page_obj) {
+
+        return false;
+
+        exit();
+
+    }
+
+    $page_args = array(
+
+        'post_type'      => 'page',
+
+        'post_status'    => 'publish',
+
+        'post_title'     => ucwords($page_title),
+
+        'post_name'      => strtolower(trim($page_title)),
+
+        'post_content'   => $page_content,
+
+    );
+
+    $page_id = wp_insert_post($page_args);
+
+    return $page_id;
+
+}
 /***
  *  HEADERS.... FIX (Warning: Cannot modify header information - headers already sent by).... FIX
  * **/

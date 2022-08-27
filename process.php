@@ -342,3 +342,12 @@ function wp_update_user_address(){
     echo json_encode(array('Status' => $status, 'msg' => $message, 'REQUEST' => $_REQUEST));
     exit;
 }
+
+
+/***
+ * CLEAN FORM INPUT
+ * ***/
+
+function clean_input($inp){
+    return stripslashes(strip_tags($inp));
+}
