@@ -2,7 +2,7 @@
 /*
 Plugin Name: wp_lite Signup
 Plugin URI: 
-Description: [signin_form][signup_form][user_activation][wp_lite_dashboard][wp_lite_forgot_password] in later versions: sanitzation, auto generate pages, layout css to display responses more better, add admin page with dynamic fields.
+Description: [signin_form][signup_form][user_activation][wp_lite_dashboard][wp_lite_forgot_password] in later versions: add admin page with dynamic fields.
 Author:  Aamir Hussain
 Version: 3
 Author URI: 
